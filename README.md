@@ -30,37 +30,6 @@ OpenWrt / AX6600 / IPQ6010 / JDCloud RE-CS-02 / NSS / Router Firmware / Cloud Bu
 
 ---
 
-## 🛠️ 刷机指南
-
-> ⚠️ **重要提示：** 以下操作涉及 U-Boot 和分区修改，**请务必先备份重要数据**，谨慎操作！
-
-### 详细教程
-📖 **[完整刷机图文教程 →](https://blog.waynecommand.com/post/athena-re-cs-02.html)**（推荐新手参考）
-
-### 刷机步骤
-
-1. **启用 SSH 访问**
-   - 进入旧版本固件管理后台
-   - 启用 SSH 服务
-
-2. **备份分区**（二选一）
-   - 通过 SSH 备份分区数据
-   - 或使用 TTL 串口备份（更安全）
-
-3. **刷入 U-Boot**
-   - 安装不死 U-Boot（防砖）
-   - 更新双分区 GPT 分区表
-
-4. **创建存储分区**
-   - 新建 storage 分区
-   - 恢复跑分分区数据
-
-5. **刷入固件**
-   - 从 Releases 下载最新固件
-   - 通过 U-Boot Web 界面刷入
-
----
-
 ## 📋 固件说明
 
 | 说明 | 详情 |
@@ -68,12 +37,9 @@ OpenWrt / AX6600 / IPQ6010 / JDCloud RE-CS-02 / NSS / Router Firmware / Cloud Bu
 | **编译时间** | 显示的时间为编译开始时间，用于对应上游源码版本 |
 | **版本划分** | 默认同时构建 `PURE` 纯净版与 `RICH` 丰富版 |
 | **基础功能** | 纯净版保持当前轻量配置，包含完整网络功能栈 |
-| **扩展插件** | 丰富版额外集成 Docker / Dockerman、PassWall / PassWall2、OpenClash、AdGuard Home 等常用组件，也可通过自定义配置 `.config` 文件继续增加插件 |
+| **扩展插件** | 丰富版额外集成 Docker / Dockerman、PassWall / PassWall2、OpenClash、AdGuard Home 等常用组件，也可通过自定义配置 `.config` 文件增加插件 |
 | **硬件平台** | 基于 QUALCOMMAX（IPQ6010）架构 |
 | **性能优化** | 针对 IPQ6010 平台进行网络性能调优 |
-
----
-
 
 ### 固件版本
 
@@ -94,7 +60,82 @@ Releases 页面每个版本包含以下文件（PURE 与 RICH 分开发布，Rel
 | `Config-配置-版本-作者-分支-时间.txt` | 本次编译使用的完整 `.config`，便于复现构建或二次定制 |
 | `Packages-配置-版本-作者-分支-时间.txt` | 外部插件（PassWall / PassWall2 / OpenClash 及依赖 feed）的仓库、分支与 commit 记录，仅 `RICH` 丰富版生成，便于排查上游变更 |
 
-### 构建机制（PURE / RICH 如何隔离）
+---
+
+## 🛠️ 刷机指南
+
+> ⚠️ **重要提示：** 以下操作涉及 U-Boot 和分区修改，**请务必先备份重要数据**，谨慎操作！
+
+### 详细教程
+📖 **[完整刷机图文教程 →](https://blog.waynecommand.com/post/athena-re-cs-02.html)**（推荐新手参考）
+
+### 刷机前必读
+
+1. **备份所有数据**
+   ```bash
+   # SSH 连接到设备
+   ssh root@192.168.1.1
+
+   # 备份整个 U-Boot 分区
+   dd if=/dev/mtd0 of=/tmp/uboot.bin
+
+   # 备份分区表
+   dd if=/dev/mtd1 of=/tmp/partition_table.bin
+   ```
+2. **验证文件完整性**
+   ```bash
+   # 下载固件和校验和文件
+   # 验证 SHA256
+   sha256sum -c firmware.bin.sha256
+   ```
+3. **准备恢复方案**
+   - 保留 TTL 串口工具
+   - 准备原厂固件备份
+   - 了解救砖流程
+
+### 刷机步骤
+
+1. **启用 SSH 访问**
+   - 进入旧版本固件管理后台
+   - 启用 SSH 服务
+
+2. **备份分区**（二选一）
+   - 通过 SSH 备份分区数据
+   - 或使用 TTL 串口备份（更安全）
+
+3. **刷入 U-Boot**
+   - 安装不死 U-Boot（防砖）
+   - 更新双分区 GPT 分区表
+
+4. **创建存储分区**
+   - 新建 storage 分区
+   - 恢复跑分分区数据
+
+5. **刷入固件**
+   - 从 Releases 下载最新固件（首刷选 `factory`，升级选 `sysupgrade`）
+   - 通过 U-Boot Web 界面刷入
+
+### U-Boot 固件仓库
+
+| 平台 | 仓库地址 | 说明 |
+|------|---------|------|
+| **eMMC 版本** | [chenxin527/uboot-ipq60xx-emmc-build](https://github.com/chenxin527/uboot-ipq60xx-emmc-build) | eMMC 存储设备专用 |
+| **NOR Flash 版本** | [chenxin527/uboot-ipq60xx-nor-build](https://github.com/chenxin527/uboot-ipq60xx-nor-build) | NOR Flash 存储设备专用 |
+
+> 💡 **提示：** U-Boot 版本选择需与您的设备硬件配置相匹配，错误选择会导致设备无法启动！
+
+### 常见风险及预防
+
+| 风险 | 症状 | 预防方法 |
+|------|------|---------|
+| **U-Boot 错误** | 设备无法启动 | 使用不死 U-Boot，备份原件 |
+| **分区错误** | 系统无法识别 | 使用正确的 GPT 分区表 |
+| **断电** | 刷机中断 | 使用 UPS 或稳定电源 |
+| **固件损坏** | 开机无响应 | 验证 SHA256 后再刷入 |
+
+---
+
+## 🧱 构建机制（PURE / RICH 如何隔离）
 
 - 两个版本由工作流参数 `WRT_PROFILE` 区分，所有丰富版逻辑（额外配置、feed、插件克隆）均由该条件隔离，**纯净版产物不受丰富版任何改动影响**。
 - 丰富版插件来源唯一：LuCI 插件本体由 `Scripts/Packages.sh` 克隆到 `package/`（优先级高于 feeds），依赖包（xray、sing-box 等）由 `passwall_packages` feed 提供，避免同名包双重定义。
@@ -106,7 +147,7 @@ Releases 页面每个版本包含以下文件（PURE 与 RICH 分开发布，Rel
 - `PURE`：推荐作为日常稳定版，保持当前轻量配置。
 - `RICH`：丰富版会额外集成 Docker / Dockerman、PassWall / PassWall2、OpenClash、AdGuard Home，固件体积和运行资源占用都会明显高于纯净版。
 - 手动测试时可在 `WRT-TEST` 工作流选择 `PROFILE=PURE` 或 `PROFILE=RICH`；建议丰富版发布前至少先用 `TEST=true` 生成最终 `.config`，再用完整编译确认上游插件依赖没有变化。
-- Release 会额外上传 `Packages-*.txt` 记录丰富版外部插件仓库、分支和 commit，方便排查 OpenClash / PassWall / PassWall2 上游变更导致的编译问题。丰富版的 LuCI 插件（PassWall / PassWall2 / OpenClash）直接克隆到 `package/`（优先级高于 feeds，保证插件入口进入固件），其依赖包（xray、sing-box 等）由 `passwall_packages` feed 提供，两者来源唯一、互不重复。
+- Release 会额外上传 `Packages-*.txt` 记录丰富版外部插件仓库、分支和 commit，方便排查 OpenClash / PassWall / PassWall2 上游变更导致的编译问题。
 
 > ⚠️ 丰富版依赖外部插件仓库和上游 feeds，若上游调整包名或依赖，可能需要同步更新 `Config/GENERAL_AX6600_RICH.txt`。
 
@@ -122,21 +163,10 @@ Releases 页面每个版本包含以下文件（PURE 与 RICH 分开发布，Rel
 
 ## 🔗 上游源码与依赖
 
-### 📦 OpenWrt 源码仓库
-
 | 版本 | 仓库地址 | 说明 |
 |------|---------|------|
 | **官方版** | [immortalwrt/immortalwrt](https://github.com/immortalwrt/immortalwrt.git) | ImmortalWrt 官方仓库 |
-| **高通专用版** | [ones20250/immortalwrt_ipq](https://github.com/ones20250/immortalwrt_ipq.git) | IPQ 平台优化版本 |
-
-### 🔧 U-Boot 固件仓库
-
-| 平台 | 仓库地址 | 说明 |
-|------|---------|------|
-| **eMMC 版本** | [chenxin527/uboot-ipq60xx-emmc-build](https://github.com/chenxin527/uboot-ipq60xx-emmc-build) | eMMC 存储设备专用 |
-| **NOR Flash 版本** | [chenxin527/uboot-ipq60xx-nor-build](https://github.com/chenxin527/uboot-ipq60xx-nor-build) | NOR Flash 存储设备专用 |
-
-> 💡 **提示：** U-Boot 版本选择需与您的设备硬件配置相匹配，错误选择会导致设备无法启动！
+| **高通专用版** | [ones20250/immortalwrt_ipq](https://github.com/ones20250/immortalwrt_ipq.git) | IPQ 平台优化版本（fork 自 [VIKINGYFY/immortalwrt](https://github.com/VIKINGYFY/immortalwrt)，作为稳定闸门定期同步） |
 
 ---
 
@@ -144,24 +174,19 @@ Releases 页面每个版本包含以下文件（PURE 与 RICH 分开发布，Rel
 
 ### 修改编译配置
 
-编辑 `config/.config` 文件，按需调整编译选项：
+| 配置文件 | 作用范围 |
+|----------|----------|
+| `Config/GENERAL_AX6600.txt` | 通用配置，PURE / RICH 两个版本共用 |
+| `Config/GENERAL_AX6600_RICH.txt` | 丰富版增量配置，仅 RICH 生效 |
+| `Config/IPQ60XX-WIFI-YES.txt` | 设备与平台基础配置 |
 
-```bash
-# 克隆仓库
-git clone https://github.com/ones20250/Openwrt-AX6600.git
-cd Openwrt-AX6600
-
-# 编辑配置文件
-nano config/.config
-
-# 提交更改（可选）
-git add config/.config
-git commit -m "feat: 更新编译配置"
-git push origin main
-```
 ### 触发编译
 
-提交代码后，GitHub Actions 会自动开始编译，编译完成后固件将发布到 Releases 页面。
+编译不会随代码提交自动触发，需通过以下方式之一：
+
+- **手动全量编译**：Actions → `QCA-ALL` → Run workflow，同时构建 PURE 与 RICH 两个版本。
+- **配置验证**：Actions → `WRT-TEST`，可选择 `PROFILE` 并勾选 `TEST=true`，仅生成最终 `.config` 不编译固件，几分钟出结果。
+- **每日自动编译**：每天早上 6 点（北京时间）由 `Auto-Clean` 清理旧产物后自动触发。
 
 ---
 
@@ -178,46 +203,9 @@ git push origin main
 
 ---
 
-## 🔐 安全建议
-
-### ⚠️ 刷机前必读
-
-1. **备份所有数据**
-   ```bash
-   # SSH 连接到设备
-   ssh root@192.168.1.1
-   
-   # 备份整个 U-Boot 分区
-   dd if=/dev/mtd0 of=/tmp/uboot.bin
-   
-   # 备份分区表
-   dd if=/dev/mtd1 of=/tmp/partition_table.bin
-   ``
-2. **验证文件完整性**
-   ```bash
-   # 下载固件和校验和文件
-   # 验证 SHA256
-   sha256sum -c firmware.bin.sha256
-   ``
-3. **准备恢复方案**
-   - 保留 TTL 串口工具
-   - 准备原厂固件备份
-   - 了解救砖流程
-
-### 🛡️ 常见风险及预防
-
-| 风险 | 症状 | 预防方法 |
-|------|------|---------|
-| **U-Boot 错误** | 设备无法启动 | 使用不死 U-Boot，备份原件 |
-| **分区错误** | 系统无法识别 | 使用正确的 GPT 分区表 |
-| **断电** | 刷机中断 | 使用 UPS 或稳定电源 |
-| **固件损坏** | 开机无响应 | 验证 SHA256 后再刷入 |
-
-
 ## ⚠️ 免责声明
 
 刷机有风险，操作需谨慎。
 
 本项目固件仅供学习与研究使用，请确认设备型号匹配并提前备份数据。
 因刷机造成的设备损坏或数据丢失，作者不承担任何责任。
-
