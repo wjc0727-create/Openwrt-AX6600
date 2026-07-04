@@ -175,7 +175,7 @@ Releases 页面每个版本包含以下文件（PURE 与 PLUS 分开发布，Rel
 | 版本 | 仓库地址 | 说明 |
 |------|---------|------|
 | **官方版** | [immortalwrt/immortalwrt](https://github.com/immortalwrt/immortalwrt.git) | ImmortalWrt 官方仓库 |
-| **高通专用版** | [ones20250/immortalwrt_ipq](https://github.com/ones20250/immortalwrt_ipq.git) | IPQ 平台优化版本（fork 自 [VIKINGYFY/immortalwrt](https://github.com/VIKINGYFY/immortalwrt)，作为稳定闸门定期同步） |
+| **高通专用版** | [ones20250/immortalwrt_ipq](https://github.com/ones20250/immortalwrt_ipq.git) | IPQ 平台优化版本，定期同步上游并验证后构建 |
 
 ---
 
