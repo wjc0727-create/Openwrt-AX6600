@@ -1,1 +1,15 @@
-111
+#jc自定义 Docker 补齐依赖 keepalived
+CONFIG_PACKAGE_luci-ssl=y
+CONFIG_PACKAGE_kmod-ip6tables=y
+CONFIG_PACKAGE_kmod-ipt-core=y
+CONFIG_PACKAGE_kmod-ipt-extra=y
+CONFIG_PACKAGE_kmod-ipt-nat=y
+CONFIG_PACKAGE_kmod-ipt-nat6=y
+CONFIG_PACKAGE_kmod-ipt-physdev=y
+CONFIG_PACKAGE_kmod-nf-ipvs=y
+CONFIG_PACKAGE_kmod-ipt-fullconenat=y
+CONFIG_PACKAGE_kmod-ipt-conntrack=y
+CONFIG_PACKAGE_luci-app-keepalived=y
+CONFIG_PACKAGE_kmod-ipt-ipset=y
+CONFIG_PACKAGE_ipset=y
+CONFIG_PACKAGE_nlbwmon=y
