@@ -62,7 +62,22 @@ jobs:
       #源码名称
       WRT_SOURCE: ${{matrix.SOURCE}}
       #插件调整
-      WRT_PACKAGE: ${{inputs.PACKAGE}}
+      WRT_PACKAGE: |
+        ${{inputs.PACKAGE}}
+        CONFIG_PACKAGE_luci-ssl=y
+        CONFIG_PACKAGE_kmod-ip6tables=y
+        CONFIG_PACKAGE_kmod-ipt-core=y
+        CONFIG_PACKAGE_kmod-ipt-extra=y
+        CONFIG_PACKAGE_kmod-ipt-nat=y
+        CONFIG_PACKAGE_kmod-ipt-nat6=y
+        CONFIG_PACKAGE_kmod-ipt-physdev=y
+        CONFIG_PACKAGE_kmod-nf-ipvs=y
+        CONFIG_PACKAGE_kmod-ipt-fullconenat=y
+        CONFIG_PACKAGE_kmod-ipt-conntrack=y
+        CONFIG_PACKAGE_luci-app-keepalived=y
+        CONFIG_PACKAGE_kmod-ipt-ipset=y
+        CONFIG_PACKAGE_ipset=y
+        CONFIG_PACKAGE_nlbwmon=y
       #固件版本：PURE=纯净版，PLUS=Plus 版
       WRT_PROFILE: ${{matrix.PROFILE}}
       #仅输出配置文件
