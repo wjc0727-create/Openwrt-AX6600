@@ -3,11 +3,20 @@ name: QCA-ALL
 
 #CI计划
 on:
+  # 自动编译：当仓库主分支有代码更新（包括同步上游）时触发
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - '.github/workflows/Sync-Upstream.yml'
+
   #自动编译：当Auto-Clean运行完成后
   workflow_run:
     workflows: ["Auto-Clean"]
     types:
       - completed
+
   #手动编译
   workflow_dispatch:
     inputs:
