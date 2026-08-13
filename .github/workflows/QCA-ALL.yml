@@ -77,11 +77,10 @@ jobs:
         CONFIG_PACKAGE_luci-app-keepalived=y
         CONFIG_PACKAGE_kmod-ipt-ipset=y
         CONFIG_PACKAGE_ipset=y
-        CONFIG_PACKAGE_nlbwmon=y
         CONFIG_PACKAGE_luci-app-cloudflared=y
         CONFIG_PACKAGE_luci-app-dockerman=y
-        CONFIG_PACKAGE_luci-i18n-dockerman-zh-cn=y
-        CONFIG_PACKAGE_luci-i18n-cloudflared-zh-cn=y
+        CONFIG_PACKAGE_luci-app-watchcat=y
+        CONFIG_PACKAGE_luci-app-nlbwmon=y
       #固件版本：PURE=纯净版，PLUS=Plus 版
       WRT_PROFILE: ${{matrix.PROFILE}}
       #仅输出配置文件
