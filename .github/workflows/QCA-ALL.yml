@@ -90,6 +90,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-dockerman=y
         CONFIG_PACKAGE_luci-app-watchcat=y
         CONFIG_PACKAGE_luci-app-nlbwmon=y
+        CONFIG_PACKAGE_luci-app-mwan3=y
       #固件版本：PURE=纯净版，PLUS=Plus 版
       WRT_PROFILE: ${{matrix.PROFILE}}
       #仅输出配置文件
